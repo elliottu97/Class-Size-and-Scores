@@ -2,7 +2,6 @@ library(matrixStats)
 library(grf)
 library(keras)
 
-#QUESTION 3
 set.seed(1)
 data <- read.csv('star.csv')
 attach(data)
@@ -32,79 +31,3 @@ results <- cbind(subg, tauhat$predictions, SE, CI)
 colnames(results) <- c("fem", "wh", "fl", "urb", "estimate", "SE", "CI lower", "CI upper")
 print(results)
 
-#QUESTION 4
-rm(list = ls())
-
-library(tensorflow)
-library(keras)
-
-data <- dataset_mnist()
-attach(data)
-set.seed(1)
-
-xtrain <- mnist$train$x
-ytrain <- mnist$train$y
-xtest <- mnist$test$x
-ytest <- mnist$test$y
-xtrain <- array_reshape(xtrain, c(nrow(xtrain), 784))
-xtest <- array_reshape(xtest, c(nrow(xtest), 784))
-xtrain <- xtrain / 255
-xtest <- xtest / 255
-
-testl1s <- c(.00001, .0001, .001, .005, .01, .05)
-scorelist <- c()
-for (i in (testl1s)) {
-  model <- keras_model_sequential()
-  model %>%
-    layer_dense(units = 256, activation = 'relu', input_shape = c(784), kernal_regularizer = regularizer_l1(1 = i)) %>%
-    layer_dense (units = 128, activation = 'relu', kernal_regularizer = regularizer_l1(1=i)) %>%
-    layer_dense(units = 10, activation = 'softmax')
-  model %>% compile(
-    loss = 'categorical_crossentropy'
-    optimizer = optimizer_sgd()
-    metrics = 'accuracy'
-    
-  )
-  hist <- model %>% fit(xtrain, ytrain, epochs = 30, batch_size = 128, validation_split = .2)
-  score <- model %>% evaluate(xtest, ytest)
-  print(i)
-  print(score)
-  scorelist <- append(scorelist, score[2])
-  
-}
-plot(scorelist)
-
-#QUESTION 5
-rm(list = ls())
-
-set.seed(1)
-library(ISLR)
-library(e1071)
-
-data("OJ")
-x <- OJ[,2:18]
-y <- OJ$Purchase
-
-test <- 1:500
-trainx <- x[-test,]
-trainy <- y[-test]
-testx <- x[test,]
-testy <- y[test]
-traindata <- data.frame(x = trainx, y = trainy)
-testdata <- data.frame(x = testx, y = testy)
-
-costs <- seq(.01, 2, length.out = 200)
-testacc <- costs
-for (i in 1:length(costs)) {
-  print(i)
-  svmfit <- svm(y~.,
-                data = traindata,
-                kernel = "radial",
-                gamma = 2,
-                cost = costs[i])
-  testypred <- predict(svmfit, testdata)
-  testacc[i] <- mean(testypred == testdata$y)
-}
-
-bestcost <- costs[which.max(testacc)]
-print(bestcost)
