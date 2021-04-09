@@ -10,6 +10,12 @@ I'm examining here whether being in a small class has different effects on avera
 I use the grf package to estimate the conditional average treatment effects for the 16 different combinations of fem, wh, fl, and urb using 4000 trees.
 All other covariate values are kept at their mean values. Results are the estimates, standard errors, and 95% confidence intervals of the combinations in a table. 
 
+After this I estimate the effects of being in a small class for students at the mean and at 18 different quantiles
+of the test score distribution (from the 0.1 quantile to the 0.95 quantile). The effects are plotted with 95% confidence bands.
+
+The last table contains the two-sided equal-tailed nominal 95% bootstrap confidence intervals and standard errors using 1000 booststrap iterations for
+the estimates from the above quantiles. 
+
 Uses 1 dataset and 2 R packages, matrixStats and grf
 
 PDF included contains results table. 
